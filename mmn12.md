@@ -1,4 +1,24 @@
-# mmn12
+# Introduction to the Theory of Computation and Complexity (20585): MMN12
+
+Dor Pascal, 2024(a)
+
+---
+
+- [Question 1](#question-1)
+  - [1.1](#11)
+  - [1.2](#12)
+- [Question 2](#question-2)
+  - [2.1](#21)
+  - [2.2](#22)
+  - [2.3](#23)
+- [Question 3](#question-3)
+- [Question 4](#question-4)
+- [Question 5](#question-5)
+  - [5.1](#51)
+  - [5.2](#52)
+  - [5.3](#53)
+
+---
 
 ## Question 1
 
@@ -42,7 +62,7 @@ If on input $<M>^R$ $D$ run $H$ on input $<M,<M>>$, then $D(<D>)$ means: on inpu
 
 **Note**: I'm assuming that due to the nature of $<>$ as a string that represent the encoding of a TM, we can represent some turing machine $M'$ that function as $D$ with $<D>^R$. If there is no TM $M' = <D>^R$, than the proof does not hold any way.
 
-## 2.3
+### 2.3
 
 If we change the proof of `THEROM 4.11` such that on input $<M>^R$ , $D$ will run $H$ on input $<M,<M>^R>$, then we **will** get a contradiction, under an assumption regarding the encoding of $D$.
 
@@ -56,10 +76,45 @@ If $H$ accepts $<M',<D>>$:  it means $M'$ accepts  $\boldsymbol{<D>}$, and thus 
 
 We will use the the `Diagonalization` method to build a TM $K$ such that $L(K) = \{w | K \ stops \ on \ input \ w \ with \ f(w) \ on \ the \ tape \}$, where $f_k(w)$ is the function that $K$ computes, and $f_k(w)\neq f_i(w)$ for all $i$ functions that TM $M_i$ computes where $<M_i> \in A$.
 
-We will use an enumaration of all the TM's $M_i$ that are in $A$, and we will build a TM $K$ that will compute a function $f_k(w)$ that is different from all the functions that $M_i$ computes.
+We will use an `enumaration` of all the TM's $M_i$ that are in $A$, and we will build a TM $K$ that will compute a function $f_k(w)$ that is different from all the functions that $M_i$ computes.
 
+The enumeration of all the TM's $M_i$ that are in $A$ is possible because $A$ is enumerable, and thus we can build a TM $E$ that will enumerate all the TM's $M_i$ that are in $A$. We can then build $K$ that will use $E$ to enumerate all the TM's $M_i$ that are in $A$ and compute a function $f_k(w)$ that is different from all the functions that $M_i$ computes.
+
+We will build $K$ such that on input $w$:
+1. Use $E$ to enumerate all the TM's $M_i$ that are in $A$.
+2. On every $i$ TM $M_i$ that $<M_i> \in A$:
+    1. Run $M_i$ on $w$.
+    2. If $M_i$ accepts $w$, then reject.
+    3. If $M_i$ rejects $w$, then accept.
+      ($M$ does not halt on $w$ because $M_i$ does not halt on $w$.)
+
+The function $f_k(w)$ that $K$ computes is different from all the functions that $M_i$ computes because $K$ will always reject on input $w$ if $M_i$ accepts $w$, and will always accept on input $w$ if $M_i$ rejects $w$. So $K$ will always compute a different function from all the functions that $M_i$ computes. In addition, there is no TM $M_i$ in $A$ that computes $f_k(w)$ because the way $K$ computes $f_k(w)$ is by rejecting on input $w$ if $M_i$ accepts $w$, and accepting on input $w$ if $M_i$ rejects $w$, and thus $K$ will never accept on input $w$ if $M_i$ accepts $w$, and will never reject on input $w$ if $M_i$ rejects $w$. If there is a TM $M_i$ in $A$ that computes $f_k(w)$, then $K$ will simply keep runing $M_i$ on $w$ and will never halt, and thus $K$ will not compute $f_k(w)$.
 
 ## Question 4
+
+Let $AGREE_{TM} = \{<M_1,M_2> | M_1 \ and \ M_2 \ are \ TM's \ and \ there \ is \ at \ least \ one \ input \ word \ w \ such \ that \ M_1 \ and \ M_2 \ both \ accept \ w \ or \ both \ dont \ accept \ w\}$
+
+We will show that $AGREE_{TM}$ is undecidable by showing that $A_{TM}$ is reducible to $AGREE_{TM}$.
+
+We will use the following reduction $F$ from $A_{TM}$ to $AGREE_{TM}$:
+
+$F = \ on \ input \ <M,w>:$
+1. $Build \ a \ TM \ M_1 \ such \ that:$
+    1. $M_1 \ on \ input \ x:$
+        1. Run $M$ on $w$.
+        2. If $M$ accepts $w$, then accept.
+    2. $Build \ a \ TM \ M_2 \ such \ that:$
+        1. $M_2 \ on \ input \ x:$
+        1. Accept.
+   1. $Return \ <M_1,M_2>$
+
+If $M \notin A_tm$, meanin M does not accept $w$, then $M_1$ will  not halt on $w$, and since $M_2$ always accept, $M_1$ and $M_2$ do not agree on $w$. For any input <M,w> that $M$ does not accept, we can thus build $M_1$ and $M_2$ such that $M_1$ and $M_2$ do not agree on the acceptance of $w$. Note that we can also  implement this on any other input word $x \neq w$ so that $M_1$ and $M_2$ will not agree on the acceptance of $x$.
+
+On the other hand, if $M$ **does** halt on $w$, then $M_1$ will also halt and accept on $w$, and since $M_2$ always accept, $M_1$ and $M_2$ agree on the acceptance of $w$ only if $M$ accepts $w$. Therefore, $<M_1, M_2> \in AGREE_{TM}$ if and only if $<M, w> \in A_{TM}$.
+
+So $F$ is a reduction from $A_{TM}$ to $AGREE_{TM}$, and since $A_{TM}$ is undecidable, $AGREE_{TM}$ is undecidable.
+
+Note: this question remind me logical gates and the way we can build any logical gate from NAND gate. We can build any TM from NAND gate, and we can build any TM from $AGREE_{TM}$.
 
 ## Question 5
 
