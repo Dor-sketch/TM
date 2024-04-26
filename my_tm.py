@@ -1,3 +1,4 @@
+from collections import deque
 import math
 import pygame
 import sys
@@ -27,14 +28,32 @@ def load_transitions_from_csv(filename):
     with open(filename, 'r') as file:
         reader = csv.reader(file)
         for row in reader:
+            for i in range(len(row)):
+                row[i] = row[i].split('#')[0].split('//')[0].strip()
+            # Strip out inline comments (after a '#' or '//' in any part of the row)
+            if len(row) > 5:
+                # remove the extra comments
+                row = row[:5]
+            print(row)
+            # Skip empty rows or rows that have become empty after removing comments
+            if not row:
+                continue
+            try:
+                current_state, input_symbol, new_state, new_symbol, move = row
+            except ValueError:
+                print(f"Error: Invalid row: {row}")
+                continue
+            # Ensure no trailing spaces interfere
             current_state, input_symbol, new_state, new_symbol, move = row
+
             if current_state not in transitions:
                 transitions[current_state] = {}
+
             transitions[current_state][input_symbol] = (
                 new_state, new_symbol, move)
-    return transitions
 
-# Turing Machine class
+    print(transitions)
+    return transitions
 
 
 class TuringMachine:
@@ -108,48 +127,42 @@ class TuringMachineApp:
         self.positions = {state: (random.uniform(0, SCREEN_WIDTH), random.uniform(
             0, SCREEN_HEIGHT)) for state in self.states_list}
         self.init_positions()
+    from collections import deque
+    from collections import deque
 
     def init_positions(self):
+        self.start_state = 'q_start'
         # Initialize positions
-        self.positions = {state: (random.uniform(0, SCREEN_WIDTH), random.uniform(
-            0, SCREEN_HEIGHT)) for state in self.states_list}
+        self.positions = {}
 
-        # Define margins
-        MARGIN_X = 100  # Adjust as needed
+        # Define margins and spacing
+        MARGIN_X = 200  # Adjust as needed
         MARGIN_Y = 100  # Adjust as needed
+        SPACING_X = 120  # Adjust as needed
+        SPACING_Y = 120  # Adjust as needed
 
-        # Kamada-Kawai algorithm
-        iterations = 500  # Adjust as needed
-        for _ in range(iterations):
-            # Calculate forces
-            disp = {state: (0, 0) for state in self.states_list}
-            for state1 in self.states_list:
-                for state2 in self.states_list:
-                    if state1 != state2:
-                        dx, dy = self.positions[state1][0] - \
-                            self.positions[state2][0], self.positions[state1][1] - \
-                            self.positions[state2][1]
-                        distance = math.sqrt(dx * dx + dy * dy)
-                        if distance < 1:  # Prevent division by zero
-                            distance = 1
-                        # Change formula for force
-                        force = (distance - 1) / distance
-                        repulsion_force = 100 / distance**2 if distance < 100 else 0  # Adjust as needed
-                        force += repulsion_force
-                        disp[state1] = (disp[state1][0] + dx *
-                                        force, disp[state1][1] + dy * force)
+        # Breadth-first search to layout states in layers
+        visited = {state: False for state in self.states_list}
+        # Start with the start state at layer 0
+        queue = deque([(self.start_state, 0)])
+        layer_nodes = {}  # Keep track of nodes at each layer
 
-            # Update positions
-            for state in self.states_list:
-                dx, dy = disp[state]
-                distance = math.sqrt(dx * dx + dy * dy)
-                if distance < 1:  # Prevent division by zero
-                    distance = 1
-                self.positions[state] = (
-                    self.positions[state][0] + dx / distance, self.positions[state][1] + dy / distance)
-                # make sure the states are within the screen and respect the margins
-                self.positions[state] = (min(SCREEN_WIDTH - MARGIN_X, max(MARGIN_X, self.positions[state][0])), min(
-                    SCREEN_HEIGHT - MARGIN_Y, max(MARGIN_Y, self.positions[state][1])))
+        while queue:
+            state, layer = queue.popleft()
+            if not visited[state]:
+                visited[state] = True
+                x = MARGIN_X + layer * SPACING_X
+                # Position based on the number of nodes in this layer
+                y = MARGIN_Y + len(layer_nodes.get(layer, [])) * SPACING_Y
+                self.positions[state] = (x, y)
+                layer_nodes.setdefault(layer, []).append(
+                    state)  # Add state to nodes in this layer
+                # Iterate over the values of the inner dictionary
+                for next_state in self.tm.transitions[state].values():
+                    # next_state[0] is the next state
+                    queue.append((next_state[0], layer + 1))
+
+        print(self.positions)
 
     def reset(self):
         self.tape = ['_'] * 20
@@ -196,7 +209,7 @@ class TuringMachineApp:
                     if state in drawn:
                         x, y = drawn[state]
                         text_surface = font.render(
-                            f"{symbol}:{write_symbol},{move_direction}", True, TEXT_COLOR)
+                            f"{symbol}->{write_symbol},{move_direction}", True, TEXT_COLOR)
                         text_surface.set_alpha(200)
                         text_surface.set_colorkey((0, 255, 0))
                         self.graph.blit(text_surface, (x, y - 20))
@@ -214,7 +227,7 @@ class TuringMachineApp:
 
                         # render the transition text
                         text_surface = font.render(
-                            f"{symbol}:{write_symbol},{move_direction}", True, TEXT_COLOR)
+                            f"{symbol}->{write_symbol},{move_direction}", True, TEXT_COLOR)
                         text_surface.set_alpha(200)
                         text_surface.set_colorkey((0, 255, 0))
                         x = x + 10
@@ -227,8 +240,10 @@ class TuringMachineApp:
                 end_x, end_y = self.positions[next_state]
                 pygame.draw.line(self.graph, LINES_COLOR,
                                  (start_x, start_y), (end_x, end_y), 1)
+                arrow = "\u2192"
+
                 text_surface = font.render(
-                    f"{symbol}:{write_symbol},{move_direction}", True, TEXT_COLOR)
+                    f"{symbol}->{write_symbol},{move_direction}", True, TEXT_COLOR)
                 text_surface.set_alpha(200)
                 text_surface.set_colorkey((0, 255, 0))
                 self.graph.blit(
@@ -249,10 +264,28 @@ class TuringMachineApp:
 
     def run(self):
         while self.running:
-            self.head = self.tm.head
+            self.head = self.tm.head - 1
             time_delta = self.clock.tick(FPS)/1000.0
             events = pygame.event.get()
             for event in events:
+                if event.type == pygame.USEREVENT:
+                    if event.user_type == pygame_gui.UI_FILE_DIALOG_PATH_PICKED:
+                        print(event.text)
+                        transitions = load_transitions_from_csv(event.text)
+                        states = set(transitions.keys())
+                        states.add('q_start')
+                        states.add('q_accept')
+                        states.add('q_reject')
+                        start_state = 'q_start'
+                        accept_states = {'q_accept'}
+                        reject_states = {'q_reject'}
+                        input_symbols = {'0', '1'}
+                        tape_symbols = {'0', '1', '_', 'x', 'y'}
+                        self.tm = TuringMachine(states, input_symbols, tape_symbols,
+                                                transitions, start_state, accept_states, reject_states)
+                        self.states_list = list(states)
+                        self.reset()
+                        self.init_positions()
                 if event.type == pygame.QUIT:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
@@ -296,13 +329,16 @@ class TuringMachineApp:
 
 
 if __name__ == "__main__":
-    states = {'q_start', 'q1', 'q2', 'q3', 'q4', 'q5', 'q_accept', 'q_reject'}
     input_symbols = {'0', '1'}
     tape_symbols = {'0', '1', '_', 'x', 'y'}
-    transitions = load_transitions_from_csv('transitions.csv')
-    start_state = 'q0'
-    accept_states = {'q7'}
-    reject_states = {'q6'}
+    transitions = load_transitions_from_csv('a3.csv')
+    states = set(transitions.keys())
+    states.add('q_start')
+    states.add('q_accept')
+    states.add('q_reject')
+    start_state = 'q_start'
+    accept_states = {'q_accept'}
+    reject_states = {'q_reject'}
 
     tm = TuringMachine(states, input_symbols, tape_symbols,
                        transitions, start_state, accept_states, reject_states)

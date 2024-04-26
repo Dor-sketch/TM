@@ -1,0 +1,13 @@
+q_start,0,q_check_third,0,R    // Start, move right to check groups of three zeros
+q_check_third,0,q_check_third,0,R // Move right looking for the third zero
+q_check_third,0,q_mark,_,L    // Found third zero, mark it and move left
+q_mark,0,q_mark,0,L           // Move left over unmarked zeros
+q_mark,_,q_return_start,_,R   // Blank reached (left end of group), move right to initial position
+q_return_start,0,q_return_start,0,R // Return to the start of the tape
+q_return_start,_,q_check_unmarked,_,R // At the start, move right to check for unmarked zeros
+q_check_unmarked,0,q_reject,0,R // If an unmarked zero is found, reject the string
+q_check_unmarked,_,q_reset,_,L  // No unmarked zeros left, begin reset process
+q_reset,0,q_reset,0,L          // Move left, erasing all marks
+q_reset,_,q_start,_,R          // No marks left, move right and restart the process
+q_reject,_,q_reject,_,R        // Reject state (traps machine in reject state)
+q_accept,_,q_accept,_,R        // Accept state (traps machine in accept state)
