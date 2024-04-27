@@ -1,5 +1,5 @@
-q_start,_,q_reject,_,R
-q_start,0,q2,_,R
+q1,_,q_reject,_,R
+q1,0,q2,_,R
 q2,X,q2,X,R
 q2,0,q3,X,R
 q2,_,q_accept,_,R

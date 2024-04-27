@@ -1,10 +1,26 @@
+"""
+This module contains the TuringMachineApp class that is responsible for running
+the Turing Machine simulator.
+The TuringMachineApp class is responsible for creating the graphical user interface
+for the Turing Machine simulator.
+It uses the Pygame library to create the GUI elements and to handle user input.
+The TuringMachineApp class has methods
+- reset: to reset the Turing Machine to its initial state
+- load: to load transitions from a CSV file
+- draw_tape: to draw the tape on the screen
+- generate_graph: to generate the state transition graph
+- run: to run the Turing Machine simulator
+"""
+
+import sys
+import random
 from collections import deque
 import math
 import pygame
-import sys
-import csv
 import pygame_gui
-import random
+from utils import load_transitions_from_csv
+from turing_machine import TuringMachine
+
 # Initialize Pygame
 pygame.init()
 
@@ -16,92 +32,19 @@ STATE_COLOR = (100, 0, 0)  # Green
 TEXT_COLOR = (255, 255, 255)  # White
 LINES_COLOR = (0, 0, 255)  # Blue
 TAPE_COLOR = (200, 200, 200)
-# Fonts
-FONT_SIZE = 20
-font = pygame.font.Font(None, FONT_SIZE)
+FONT_PATH = pygame.font.match_font('Monaco')
+ARROW = "\u2192"
+BLANK = "\u23B5"
+ARROW_length = 10
+FONT_SIZE = 11
+MARGIN_X = 200
+MARGIN_Y = 100
+SPACING_X = 120
+SPACING_Y = 120
 
+
+font = pygame.font.Font(FONT_PATH, FONT_SIZE)
 # Define a function to load transitions from a CSV file
-
-
-def load_transitions_from_csv(filename):
-    transitions = {}
-    with open(filename, 'r') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            for i in range(len(row)):
-                row[i] = row[i].split('#')[0].split('//')[0].strip()
-            # Strip out inline comments (after a '#' or '//' in any part of the row)
-            if len(row) > 5:
-                # remove the extra comments
-                row = row[:5]
-            print(row)
-            # Skip empty rows or rows that have become empty after removing comments
-            if not row:
-                continue
-            try:
-                current_state, input_symbol, new_state, new_symbol, move = row
-            except ValueError:
-                print(f"Error: Invalid row: {row}")
-                continue
-            # Ensure no trailing spaces interfere
-            current_state, input_symbol, new_state, new_symbol, move = row
-
-            if current_state not in transitions:
-                transitions[current_state] = {}
-
-            transitions[current_state][input_symbol] = (
-                new_state, new_symbol, move)
-
-    print(transitions)
-    return transitions
-
-
-class TuringMachine:
-    def __init__(self, states, input_symbols, tape_symbols, transitions, start_state, accept_states, reject_states):
-        self.states = states
-        self.input_symbols = input_symbols
-        self.tape_symbols = tape_symbols
-        self.transitions = transitions
-        self.start_state = 'q_start'
-        self.current_state = self.start_state
-        self.accept_states = accept_states
-        self.reject_states = reject_states
-        self.accept_states.add('q_accept')
-        self.reject_states.add('q_reject')
-        self.head = 0
-
-    def get_transition(self, tape_symbol):
-        return self.transitions[self.current_state].get(tape_symbol, None)
-
-    def step(self, tape, head):
-        head = self.head
-        # print(self.current_state, tape, head)
-        if self.current_state in self.accept_states:
-            return True, 'Accepted'
-        if self.current_state in self.reject_states:
-            return True, 'Rejected'
-        if head < 0 or head >= len(tape):
-            return True, 'Error: Head out of bounds'
-
-        tape_symbol = tape[head]
-        # print head above the tape
-        print(' '.join(tape), end=' ')
-        print(f'| state: {self.current_state}')
-        print('  ' * head + '^')
-
-        transition = self.get_transition(tape_symbol)
-        if not transition:
-            return True, 'Rejected: No transition found'
-
-        new_state, new_tape_symbol, move = transition
-        tape[head] = new_tape_symbol
-        self.current_state = new_state
-        if move == 'R':
-            head += 1
-        elif move == 'L':
-            head -= 1
-        self.head = head
-        return False, (tape, head)
 
 
 class TuringMachineApp:
@@ -110,9 +53,7 @@ class TuringMachineApp:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Turing Machine Simulator")
         self.clock = pygame.time.Clock()
-        self.tape = ['_'] * 20  # Initialize tape with blanks
-        # Initialize head in the middle of the tape
-        self.head = len(self.tape) // 2
+        self.tape = self.tm.tape
         self.running = True
         self.manager = pygame_gui.UIManager(
             (SCREEN_WIDTH, SCREEN_HEIGHT))  # Create a UIManager
@@ -127,19 +68,11 @@ class TuringMachineApp:
         self.positions = {state: (random.uniform(0, SCREEN_WIDTH), random.uniform(
             0, SCREEN_HEIGHT)) for state in self.states_list}
         self.init_positions()
-    from collections import deque
-    from collections import deque
 
     def init_positions(self):
-        self.start_state = 'q_start'
+        self.start_state = 'q1'
         # Initialize positions
         self.positions = {}
-
-        # Define margins and spacing
-        MARGIN_X = 200  # Adjust as needed
-        MARGIN_Y = 100  # Adjust as needed
-        SPACING_X = 120  # Adjust as needed
-        SPACING_Y = 120  # Adjust as needed
 
         # Breadth-first search to layout states in layers
         visited = {state: False for state in self.states_list}
@@ -165,11 +98,9 @@ class TuringMachineApp:
         print(self.positions)
 
     def reset(self):
-        self.tape = ['_'] * 20
-        self.head = len(self.tape) // 2
         self.textinput.set_text('')
         self.running = True
-        self.tm.current_state = self.tm.start_state
+        self.tm.current_state = 'q1'
 
     def load(self):
         # open file dialog
@@ -180,11 +111,10 @@ class TuringMachineApp:
     def draw_tape(self):
         cell_width = 40
         cell_height = 40
-        font = pygame.font.Font(None, 36)
         start_x = (SCREEN_WIDTH - len(self.tape) * cell_width) // 2
-        start_y = SCREEN_HEIGHT // 2
+        start_y = SCREEN_HEIGHT - 100
 
-        for i, symbol in enumerate(self.tape):
+        for i, symbol in enumerate(self.tm.tape):
             rect = pygame.Rect(start_x + i * cell_width,
                                start_y, cell_width, cell_height)
             pygame.draw.rect(self.screen, TAPE_COLOR, rect, 2)
@@ -208,8 +138,9 @@ class TuringMachineApp:
                 if state == next_state:
                     if state in drawn:
                         x, y = drawn[state]
+
                         text_surface = font.render(
-                            f"{symbol}->{write_symbol},{move_direction}", True, TEXT_COLOR)
+                            f"{symbol}{ARROW}{write_symbol},{move_direction}", True, TEXT_COLOR)
                         text_surface.set_alpha(200)
                         text_surface.set_colorkey((0, 255, 0))
                         self.graph.blit(text_surface, (x, y - 20))
@@ -227,7 +158,7 @@ class TuringMachineApp:
 
                         # render the transition text
                         text_surface = font.render(
-                            f"{symbol}->{write_symbol},{move_direction}", True, TEXT_COLOR)
+                            f"{symbol}{ARROW}{write_symbol},{move_direction}", True, TEXT_COLOR)
                         text_surface.set_alpha(200)
                         text_surface.set_colorkey((0, 255, 0))
                         x = x + 10
@@ -238,12 +169,36 @@ class TuringMachineApp:
                     continue
                 start_x, start_y = self.positions[state]
                 end_x, end_y = self.positions[next_state]
+                # add radius to the x position of the start state to make the line start from the edge of the circle
+                start_x = start_x + 20
+                # make the line shorter so that it doesn't overlap with the state circle
+                end_x = end_x - 20
+
+                # make it shorter so that it doesn't overlap with the state circle
+
                 pygame.draw.line(self.graph, LINES_COLOR,
                                  (start_x, start_y), (end_x, end_y), 1)
-                arrow = "\u2192"
+
+                # Calculate the angle of the line
+                dx = end_x - start_x
+                dy = end_y - start_y
+                angle = math.atan2(dy, dx)
+
+                # Calculate the points for the ARROW
+                ARROW_dx = ARROW_length * math.cos(angle)
+                ARROW_dy = ARROW_length * math.sin(angle)
+
+                ARROW_point1 = (end_x - ARROW_dx + ARROW_dy / 2,
+                                end_y - ARROW_dy - ARROW_dx / 2)
+                ARROW_point2 = (end_x - ARROW_dx - ARROW_dy / 2,
+                                end_y - ARROW_dy + ARROW_dx / 2)
+
+                # Draw the ARROW
+                pygame.draw.polygon(self.graph, LINES_COLOR, [
+                                    (end_x, end_y), ARROW_point1, ARROW_point2])
 
                 text_surface = font.render(
-                    f"{symbol}->{write_symbol},{move_direction}", True, TEXT_COLOR)
+                    f"{symbol}{ARROW}{write_symbol},{move_direction}", True, TEXT_COLOR)
                 text_surface.set_alpha(200)
                 text_surface.set_colorkey((0, 255, 0))
                 self.graph.blit(
@@ -257,14 +212,15 @@ class TuringMachineApp:
             text_surface = font.render(state, True, TEXT_COLOR)
             text_surface.set_alpha(200)
             text_surface.set_colorkey((0, 255, 0))
-            self.graph.blit(text_surface, (x, y))
+            text_center = text_surface.get_rect(center=(x, y))
+            self.graph.blit(text_surface, text_center)
 
         # Blit the graph onto the current screen
         self.screen.blit(self.graph, (0, 0))
 
     def run(self):
         while self.running:
-            self.head = self.tm.head - 1
+            self.head = self.tm.head
             time_delta = self.clock.tick(FPS)/1000.0
             events = pygame.event.get()
             for event in events:
@@ -273,32 +229,30 @@ class TuringMachineApp:
                         print(event.text)
                         transitions = load_transitions_from_csv(event.text)
                         states = set(transitions.keys())
-                        states.add('q_start')
-                        states.add('q_accept')
-                        states.add('q_reject')
-                        start_state = 'q_start'
-                        accept_states = {'q_accept'}
-                        reject_states = {'q_reject'}
-                        input_symbols = {'0', '1'}
-                        tape_symbols = {'0', '1', '_', 'x', 'y'}
-                        self.tm = TuringMachine(states, input_symbols, tape_symbols,
-                                                transitions, start_state, accept_states, reject_states)
+                        self.tm = TuringMachine(states, self.tm.input_symbols,
+                                                self.tm.tape_symbols, transitions)
                         self.states_list = list(states)
                         self.reset()
                         self.init_positions()
                 if event.type == pygame.QUIT:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        finished, result = self.tm.step(self.tape, self.head)
+                    if event.key == pygame.K_DOWN or event.key == pygame.K_RIGHT:
+                        finished, result = self.tm.step()
                         if finished:
-                            print(result)
-                            self.running = False
+                            window = pygame_gui.windows.UIMessageWindow(
+                                rect=pygame.Rect((100, 100), (400, 200)),
+                                manager=self.manager,
+                                window_title="Result",
+                                html_message=f"<font size=4>{result}</font>")
+                    elif event.key == pygame.K_UP or event.key == pygame.K_LEFT:
+                        self.reset()
                 elif event.type == pygame.USEREVENT:
                     if event.user_type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                         if event.ui_element == self.textinput:
                             self.tape = list(self.textinput.get_text(
                             )) + self.tape[len(self.textinput.get_text()):]
+                            self.tm.set_input(self.textinput.get_text())
                     elif event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                         if event.ui_element == self.reset_button:
                             self.reset()
@@ -326,21 +280,3 @@ class TuringMachineApp:
 
         pygame.quit()
         sys.exit()
-
-
-if __name__ == "__main__":
-    input_symbols = {'0', '1'}
-    tape_symbols = {'0', '1', '_', 'x', 'y'}
-    transitions = load_transitions_from_csv('a3.csv')
-    states = set(transitions.keys())
-    states.add('q_start')
-    states.add('q_accept')
-    states.add('q_reject')
-    start_state = 'q_start'
-    accept_states = {'q_accept'}
-    reject_states = {'q_reject'}
-
-    tm = TuringMachine(states, input_symbols, tape_symbols,
-                       transitions, start_state, accept_states, reject_states)
-    app = TuringMachineApp(tm)
-    app.run()
