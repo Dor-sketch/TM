@@ -76,12 +76,14 @@ class TuringMachineApp:
 
         # Breadth-first search to layout states in layers
         visited = {state: False for state in self.states_list}
+        print(visited)
         # Start with the start state at layer 0
         queue = deque([(self.start_state, 0)])
         layer_nodes = {}  # Keep track of nodes at each layer
 
         while queue:
             state, layer = queue.popleft()
+            print(state, layer)
             if not visited[state]:
                 visited[state] = True
                 x = MARGIN_X + layer * SPACING_X
@@ -92,6 +94,7 @@ class TuringMachineApp:
                     state)  # Add state to nodes in this layer
                 # Iterate over the values of the inner dictionary
                 for next_state in self.tm.transitions[state].values():
+                    print(next_state)
                     # next_state[0] is the next state
                     queue.append((next_state[0], layer + 1))
 
@@ -101,12 +104,15 @@ class TuringMachineApp:
         self.textinput.set_text('')
         self.running = True
         self.tm.current_state = 'q1'
+        self.tm.head = 0
 
     def load(self):
         # open file dialog
         dialog = pygame_gui.windows.UIFileDialog(pygame.Rect(
             (100, 100), (400, 400)), self.manager, window_title="Open File")
         dialog.set_blocking(True)
+
+
 
     def draw_tape(self):
         cell_width = 40
@@ -229,11 +235,15 @@ class TuringMachineApp:
                         print(event.text)
                         transitions = load_transitions_from_csv(event.text)
                         states = set(transitions.keys())
+                        self.states_list = list(states)
                         self.tm = TuringMachine(states, self.tm.input_symbols,
                                                 self.tm.tape_symbols, transitions)
+                        print (self.tm.transitions)
                         self.states_list = list(states)
-                        self.reset()
                         self.init_positions()
+                        print(self.states_list)
+                        print(self.positions)
+                        self.reset()
                 if event.type == pygame.QUIT:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
