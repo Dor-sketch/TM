@@ -24,6 +24,7 @@ from turing_machine import TuringMachine
 # Initialize Pygame
 pygame.init()
 
+
 # Screen dimensions and settings
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 FPS = 30
@@ -46,9 +47,11 @@ SPACING_Y = 120
 font = pygame.font.Font(FONT_PATH, FONT_SIZE)
 # Define a function to load transitions from a CSV file
 
+from particlesystem import ParticleSystem
 
 class TuringMachineApp:
     def __init__(self, tm):
+        self.particle_system = ParticleSystem()
         self.tm = tm
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Turing Machine Simulator")
@@ -248,7 +251,8 @@ class TuringMachineApp:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN or event.key == pygame.K_RIGHT:
-                        finished, result = self.tm.step()
+                        result_stat, _ = self.tm.step()
+                        finished = result_stat in ['q_accept', 'q_reject']
                         if finished:
                             window = pygame_gui.windows.UIMessageWindow(
                                 rect=pygame.Rect((100, 100), (400, 200)),
@@ -285,6 +289,9 @@ class TuringMachineApp:
             self.screen.blit(self.graph, (0, 0))
             self.draw_tape()
             self.manager.draw_ui(self.screen)
+            self.particle_system.add_particle(400, 300, 10, (255, 255, 255))
+            self.particle_system.update(self.screen)
+            
 
             pygame.display.flip()
 

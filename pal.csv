@@ -1,3 +1,4 @@
+// PAL = { a | a = a^R }
 q1,0,q6,_,R
 q1,1,q2,_,R
 q1,_,q_accept,_,R

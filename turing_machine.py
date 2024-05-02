@@ -36,15 +36,14 @@ class TuringMachine:
         if tape_symbol is None:
             tape_symbol = self.tape[self.head]
         self.pretty_print(self.tape, self.head)
-
-        if state == 'q_accept' or state == 'q_reject':
-            return state, tape_symbol, None
-
         transition = self.get_transition(tape_symbol)
-        if not transition:
-            return True, 'Rejected: No transition found'
-
         new_state, new_tape_symbol, move = transition
+        if new_state == None:
+            new_state = state
+        if new_tape_symbol == None:
+            new_tape_symbol = tape_symbol
+        if move == None:
+            move = 'R'
         return new_state, new_tape_symbol, move
 
     def step(self):
