@@ -4,8 +4,8 @@
 ARROW = "\u2192"
 BLANK = "\u23B5"
 ARROW_LENGTH = 10
-MARGIN_X = 200
-MARGIN_Y = 100
+MARGIN_X = 100
+MARGIN_Y = 200
 SPACING_X = 120
 SPACING_Y = 120
 from collections import deque

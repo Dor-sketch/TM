@@ -63,6 +63,10 @@ class TuringMachineApp:
         self.running = True
         self.tm.current_state = INITIAL_STATE
         self.tm.head = 0
+        # clear the tape
+        self.tm.tape = ["_"] * 20
+        # clear the graph
+        self.tm_graph = TuringGraph(self.tm.states, self.tm.transitions)
 
     def load(self):
         # open file dialog
@@ -176,8 +180,8 @@ class TuringMachineApp:
             self.screen.blit(self.tm_graph.graph, (0, 0))
             self.draw_tape()
             self.manager.draw_ui(self.screen)
-            self.particle_system.add_particle(400, 300, 10, (255, 255, 255))
-            self.particle_system.update(self.screen)
+            # self.particle_system.add_particle(400, 300, 10, (255, 255, 255))
+            # self.particle_system.update(self.screen)
 
             pygame.display.flip()
 
