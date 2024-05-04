@@ -533,7 +533,4 @@ where: p. 359
 
 Description: The language of all pairs of regular expressions that generate the same language
 
-Type: Decidable
-Time complexity: ?
-Family: ?
-SPACE_Family: PSPACE
+Typ
