@@ -1,18 +1,34 @@
+"""
+A module to draw a graph of a Turing machine
+"""
 
-
-# Screen dimensions and settings
+import pygame.gfxdraw
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, STATE_COLOR, TEXT_COLOR, LINES_COLOR, font
+import math
+import random
+import pygame
+from collections import deque
 ARROW = "\u2192"
 BLANK = "\u23B5"
 ARROW_LENGTH = 10
-MARGIN_X = 100
+MARGIN_X = 70
 MARGIN_Y = 200
 SPACING_X = 120
 SPACING_Y = 120
-from collections import deque
-import pygame
-import random
-import math
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, STATE_COLOR, TEXT_COLOR, LINES_COLOR, font
+
+
+def draw_3d_circle(surface, x, y, radius, color):
+    # Draw the circle with a gradient
+    for i in range(radius):
+        alpha = round(255 * (i / radius))  # calculate alpha for gradient
+        pygame.gfxdraw.filled_circle(
+            surface, x, y, radius - i, (*color, alpha))
+
+    # Draw the shadow
+    shadow_color = (0, 0, 0, 50)  # semi-transparent black for shadow
+    pygame.gfxdraw.filled_circle(
+        surface, x + radius // 4, y + radius // 4, radius, shadow_color)
+
 
 class TuringGraph:
     def __init__(self, states, transitions):
@@ -25,89 +41,81 @@ class TuringGraph:
         self.generate_graph()
 
     def generate_graph(self):
-        # Create an image for the graph
-
         drawn = {}
-        # Draw transitions
+        self.draw_transitions(drawn)
+        self.draw_states()
+
+    def draw_transitions(self, drawn):
         for state, transitions in self.transitions.items():
             for symbol, (next_state, write_symbol, move_direction) in transitions.items():
                 if state == next_state:
-                    if state in drawn:
-                        x, y = drawn[state]
+                    self.draw_loop(state, drawn, symbol,
+                                   write_symbol, move_direction)
+                else:
+                    self.draw_line(state, next_state, symbol,
+                                   write_symbol, move_direction)
 
-                        text_surface = font.render(
-                            f"{symbol}{ARROW}{write_symbol},{move_direction}", True, TEXT_COLOR)
-                        text_surface.set_alpha(200)
-                        text_surface.set_colorkey((0, 255, 0))
-                        self.graph.blit(text_surface, (x, y - 20))
-                    else:
-                        # draw a loop
-                        x, y = self.positions[state]
-                        # draw an arc going out from the circle and coming back
-                        rect = pygame.Rect(x, y - 30, 30, 30)
-                        start_angle = math.pi / 2  # start at the top
-                        stop_angle = 2.5 * math.pi  # stop at the top, after a full loop
-                        pygame.draw.arc(self.graph, color=TEXT_COLOR, rect=rect,
-                                        start_angle=start_angle, stop_angle=stop_angle, width=2)
+    def draw_loop(self, state, drawn, symbol, write_symbol, move_direction):
+        if state in drawn:
+            x, y = drawn[state]
+            self.blit_text(x, y - 20, symbol, write_symbol, move_direction)
+        else:
+            x, y = self.positions[state]
+            self.draw_arc(x, y)
+            self.blit_text(x + 10, y - 50, symbol,
+                           write_symbol, move_direction)
+            drawn[state] = (x, y)
 
-                        # render the transition text
-                        text_surface = font.render(
-                            f"{symbol}{ARROW}{write_symbol},{move_direction}", True, TEXT_COLOR)
-                        text_surface.set_alpha(200)
-                        text_surface.set_colorkey((0, 255, 0))
-                        x = x + 10
-                        y = y - 50
-                        # adjust the position of the text surface to avoid printing inside the circle
-                        self.graph.blit(text_surface, (x, y))
-                        drawn[state] = (x, y)
-                    continue
-                start_x, start_y = self.positions[state]
-                end_x, end_y = self.positions[next_state]
-                # add radius to the x position of the start state to make the line start from the edge of the circle
-                start_x = start_x + 20
-                # make the line shorter so that it doesn't overlap with the state circle
-                end_x = end_x - 20
+    def draw_arc(self, x, y):
+        rect = pygame.Rect(x, y - 30, 30, 30)
+        start_angle = math.pi / 2
+        stop_angle = 2.5 * math.pi
+        pygame.draw.arc(self.graph, color=TEXT_COLOR, rect=rect,
+                        start_angle=start_angle, stop_angle=stop_angle, width=2)
 
-                # make it shorter so that it doesn't overlap with the state circle
+    def draw_line(self, state, next_state, symbol, write_symbol, move_direction):
+        start_x, start_y = self.positions[state]
+        end_x, end_y = self.positions[next_state]
+        start_x += 20
+        end_x -= 20
+        pygame.draw.line(self.graph, LINES_COLOR,
+                         (start_x, start_y), (end_x, end_y), 1)
+        self.draw_arrow(start_x, start_y, end_x, end_y)
+        self.blit_text((start_x + end_x) / 2, (start_y + end_y) /
+                       2, symbol, write_symbol, move_direction)
 
-                pygame.draw.line(self.graph, LINES_COLOR,
-                                 (start_x, start_y), (end_x, end_y), 1)
+    def draw_arrow(self, start_x, start_y, end_x, end_y):
+        dx = end_x - start_x
+        dy = end_y - start_y
+        angle = math.atan2(dy, dx)
+        ARROW_dx = ARROW_LENGTH * math.cos(angle)
+        ARROW_dy = ARROW_LENGTH * math.sin(angle)
+        ARROW_point1 = (end_x - ARROW_dx + ARROW_dy / 2,
+                        end_y - ARROW_dy - ARROW_dx / 2)
+        ARROW_point2 = (end_x - ARROW_dx - ARROW_dy / 2,
+                        end_y - ARROW_dy + ARROW_dx / 2)
+        pygame.draw.polygon(self.graph, LINES_COLOR, [
+                            (end_x, end_y), ARROW_point1, ARROW_point2])
 
-                # Calculate the angle of the line
-                dx = end_x - start_x
-                dy = end_y - start_y
-                angle = math.atan2(dy, dx)
+    def blit_text(self, x, y, symbol, write_symbol, move_direction):
+        text_surface = font.render(
+            f"{symbol}{ARROW}{write_symbol},{move_direction}", True, TEXT_COLOR)
+        text_surface.set_alpha(200)
+        text_surface.set_colorkey((0, 255, 0))
+        self.graph.blit(text_surface, (x, y))
 
-                # Calculate the points for the ARROW
-                ARROW_dx = ARROW_LENGTH * math.cos(angle)
-                ARROW_dy = ARROW_LENGTH * math.sin(angle)
-
-                ARROW_point1 = (end_x - ARROW_dx + ARROW_dy / 2,
-                                end_y - ARROW_dy - ARROW_dx / 2)
-                ARROW_point2 = (end_x - ARROW_dx - ARROW_dy / 2,
-                                end_y - ARROW_dy + ARROW_dx / 2)
-
-                # Draw the ARROW
-                pygame.draw.polygon(self.graph, LINES_COLOR, [
-                                    (end_x, end_y), ARROW_point1, ARROW_point2])
-
-                text_surface = font.render(
-                    f"{symbol}{ARROW}{write_symbol},{move_direction}", True, TEXT_COLOR)
-                text_surface.set_alpha(200)
-                text_surface.set_colorkey((0, 255, 0))
-                self.graph.blit(
-                    text_surface, ((start_x + end_x) / 2, (start_y + end_y) / 2))
-
-        # Draw states
+    def draw_states(self):
         for state in self.states_list:
             x, y = self.positions[state]
-            pygame.draw.circle(self.graph, color=STATE_COLOR,
-                               center=(x, y), radius=20)
-            text_surface = font.render(state, True, TEXT_COLOR)
-            text_surface.set_alpha(200)
-            text_surface.set_colorkey((0, 255, 0))
-            text_center = text_surface.get_rect(center=(x, y))
-            self.graph.blit(text_surface, text_center)
+            draw_3d_circle(self.graph, x, y, 20, STATE_COLOR)
+            self.blit_state_text(x, y, state)
+
+    def blit_state_text(self, x, y, state):
+        text_surface = font.render(state, True, STATE_COLOR)
+        text_surface.set_alpha(200)
+        text_surface.set_colorkey((0, 255, 0))
+        text_center = text_surface.get_rect(center=(x, y))
+        self.graph.blit(text_surface, text_center)
 
     def init_positions(self):
         self.start_state = 'q1'

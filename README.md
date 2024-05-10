@@ -1,7 +1,7 @@
 # Turing Machine Simulator
 
 <p align="center">
-  <img src="counter_wip.png" width="650" title="Turing Machine Simulator">
+  <img src="cover.png" width="650" title="Turing Machine Simulator">
 </p>
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=2 orderedList=false} -->

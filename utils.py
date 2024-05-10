@@ -6,6 +6,7 @@ Machine class.
 """
 
 import csv
+import random
 
 
 def load_transitions_from_csv(filename):
@@ -38,3 +39,18 @@ def load_transitions_from_csv(filename):
                 new_state, new_symbol, move)
 
     return transitions
+
+
+def get_green_shade():
+    green = random.randint(128, 255)  # Only generate high values
+    return (0, green, 0)
+
+def get_blue_shade():
+    blue = random.randint(220, 255)  # Only generate high values
+    red = random.randint(0, 255)
+    green = random.randint(0, 255)
+    return (red, green, blue)
+
+def get_red_shade():
+    red = random.randint(128, 255)  # Only generate high values
+    return (red, 0, 0)

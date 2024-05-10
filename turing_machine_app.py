@@ -14,9 +14,10 @@ The TuringMachineApp class has methods
 
 import sys
 import math
+import time
 import pygame
 import pygame_gui
-from utils import load_transitions_from_csv
+from utils import load_transitions_from_csv, get_green_shade, get_blue_shade, get_red_shade
 from particlesystem import ParticleSystem
 from turing_machine import TuringMachine
 from turing_machine_graph import TuringGraph
@@ -51,10 +52,10 @@ class TuringMachineApp:
         )  # Pass the UIManager as the second argument
         self.textinput.set_text_length_limit(20)
         self.reset_button = pygame_gui.elements.UIButton(
-            pygame.Rect((10, 70), (100, 50)), "Reset", self.manager
+            pygame.Rect((330, 10), (100, 50)), "Reset", self.manager
         )
         self.load_button = pygame_gui.elements.UIButton(
-            pygame.Rect((10, 130), (100, 50)), "Load", self.manager
+            pygame.Rect((220, 10), (100, 50)), "Load", self.manager
         )
         self.tm_graph = TuringGraph(self.tm.states, self.tm.transitions)
 
@@ -137,6 +138,18 @@ class TuringMachineApp:
         elif event.key in [pygame.K_UP, pygame.K_LEFT]:
             self.reset()
 
+    def add_green_particle(self, x, y):
+        color = get_green_shade()
+        self.particle_system.add_particle(x, y, 5, color)
+
+    def add_blue_particle(self, x, y):
+        color = get_blue_shade()
+        self.particle_system.add_particle(x, y, 5, color)
+
+    def add_red_particle(self, x, y):
+        color = get_red_shade()
+        self.particle_system.add_particle(x, y, 5, color)
+
     def step_tm(self):
         result_stat, _ = self.tm.step()
         finished = result_stat in ["q_accept", "q_reject"]
@@ -145,27 +158,17 @@ class TuringMachineApp:
                 rect=pygame.Rect((100, 100), (400, 200)),
                 manager=self.manager,
                 window_title="Result",
-                html_message=f"<font size=4>{result}</font>",
+                html_message=f"<font size=4>{result_stat}</font>",
             )
-
-    def process_button_press(self, event):
-        if event.ui_element == self.reset_button:
-            self.reset()
-            self.init_positions()
-        elif event.ui_element == self.load_button:
-            self.load()
-
-    def process_mouse_event(self, event):
-        x, y = pygame.mouse.get_pos()
-        try:
-            for state, pos in self.tm_graph.positions.items():
-                # If the mouse is over a state
-                if math.hypot(x - pos[0], y - pos[1]) < 40:
-                    print(f"Clicked on state {state}")
-        except AttributeError:
-            pass
-        except Exception as e:
-            print(e)
+        else:
+            # Add particle effect for each step
+            x, y = self.tm_graph.positions[self.tm.current_state]
+            if self.tm.current_state == "q_accept":
+                self.add_green_particle(x, y)
+            elif self.tm.current_state == "q_reject":
+                self.add_red_particle(x, y)
+            else:
+                self.add_blue_particle(x, y)
 
     def run(self):
         while self.running:
@@ -180,10 +183,27 @@ class TuringMachineApp:
             self.screen.blit(self.tm_graph.graph, (0, 0))
             self.draw_tape()
             self.manager.draw_ui(self.screen)
-            # self.particle_system.add_particle(400, 300, 10, (255, 255, 255))
-            # self.particle_system.update(self.screen)
+            # Update particle system
+            self.particle_system.update(self.screen)
 
             pygame.display.flip()
 
         pygame.quit()
         sys.exit()
+    def process_button_press(self, event):
+        if event.ui_element == self.reset_button:
+            self.reset()
+        elif event.ui_element == self.load_button:
+            self.load()
+
+    def process_mouse_event(self, event):
+        x, y = pygame.mouse.get_pos()
+        try:
+            for state, pos in self.tm_graph.positions.items():
+                # If the mouse is over a state
+                if math.hypot(x - pos[0], y - pos[1]) < 40:
+                    print(f"Clicked on state {state}")
+        except AttributeError:
+            pass
+        except Exception as e:
+            print(e)

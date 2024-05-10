@@ -49,11 +49,12 @@ class TuringMachine:
     def step(self):
         new_state, new_tape_symbol, move = self.apply_transition()
         self.tape[self.head] = new_tape_symbol
-        if move == 'R':
-            self.head += 1
-        elif move == 'L':
-            if self.head > 0:
-                self.head -= 1
+        if new_state not in ['q_accept', 'q_reject']:
+            if move == 'R':
+                self.head += 1
+            elif move == 'L':
+                if self.head > 0:
+                    self.head -= 1
 
         self.current_state = new_state
         return self.current_state in {'q_accept', 'q_reject'}, self.current_state
