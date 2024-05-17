@@ -1,4 +1,6 @@
 *
+!mids
+!mids/*.mid
 !*.md
 !.gitignore
 !*.py
@@ -6,4 +8,3 @@
 !*.png
 !csvs/
 !images/
-!mids/
