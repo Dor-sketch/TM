@@ -4,3 +4,6 @@
 !*.py
 !*.csv
 !*.png
+!csvs/
+!images/
+!mids/

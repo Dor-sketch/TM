@@ -1,8 +1,17 @@
-import pygame
+"""
+This is a simple particle system that creates particles
+at the center of the screen and moves them in random directions.
+The particles will slowly shrink and disappear after a while.
+"""
+
 import random
 import math
+import pygame
 
 class Particle:
+    """
+    A single particle in the particle system.
+    """
     def __init__(self, x, y, size, color):
         self.x = x
         self.y = y
@@ -20,13 +29,22 @@ class Particle:
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), int(self.size))
 
 class ParticleSystem:
+    """
+    A simple particle system that creates and manages particles.
+    """
     def __init__(self):
         self.particles = []
 
     def add_particle(self, x, y, size, color):
+        """
+        Add a new particle to the system.
+        """
         self.particles.append(Particle(x, y, size, color))
 
     def update(self, screen):
+        """
+        Update and draw all particles in the system.
+        """
         for particle in self.particles[:]:
             particle.move()
             particle.draw(screen)

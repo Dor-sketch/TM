@@ -10,6 +10,12 @@ import random
 
 
 def load_transitions_from_csv(filename):
+    """
+    Load transitions from a CSV file into a dictionary.
+
+    The CSV file should have the following format:
+    current_state, input_symbol, new_state, new_symbol, move
+    """
     transitions = {}
     with open(filename, 'r') as file:
         reader = csv.reader(file)
@@ -45,11 +51,13 @@ def get_green_shade():
     green = random.randint(128, 255)  # Only generate high values
     return (0, green, 0)
 
+
 def get_blue_shade():
     blue = random.randint(220, 255)  # Only generate high values
     red = random.randint(0, 255)
     green = random.randint(0, 255)
     return (red, green, blue)
+
 
 def get_red_shade():
     red = random.randint(128, 255)  # Only generate high values

@@ -1,100 +1,371 @@
-# Turing Machine Simulator
+# Turing Machine Simulator (AudioVisualSynth Integration)
 
 <p align="center">
-  <img src="cover.png" width="650" title="Turing Machine Simulator">
+  <table>
+    <tr>
+      <td><img src="images/blue.png" alt="Blue" width="400"/></td>
+      <td><img src="images/red.png" alt="Red" width="400"/></td>
+    </tr>
+    <tr>
+      <td><img src="images/purple.png" alt="Purple" width="400"/></td>
+      <td><img src="images/yellow.png" alt="Yellow" width="400"/></td>
+    </tr>
+  </table>
 </p>
-
-<!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=2 orderedList=false} -->
-
-<!-- code_chunk_output -->
 
 - [Overview](#overview)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Project Structure](#project-structure)
+  - [Main Components](#main-components)
+  - [Running the Simulator](#running-the-simulator)
+- [File Structure](#file-structure)
+- [Example](#example)
+- [Code Explanation](#code-explanation)
+  - [MIDI to Turing Machine Conversion](#midi-to-turing-machine-conversion)
+  - [Drawing the Turing Machine GraphThe](#drawing-the-turing-machine-graphthe)
 - [Contributing](#contributing)
 - [License](#license)
-- [Examples](#examples)
-
-<!-- /code_chunk_output -->
+- [Acknowledgements](#acknowledgements)
 
 ## Overview
 
-This Turing Machine Simulator is a graphical application built using Python and the Pygame library. It allows users to simulate the operation of a Turing machine, a fundamental model in theoretical computer science for algorithms and computation. Users can load transition rules from a CSV file, visualize the Turing machine's tape, and observe the machine's state transitions graphically in real-time.
-
-This repository also includes a summery of important languages and proofs from the book "Introduction to the Theory of Computation" by Michael Sipser. The goal is to provide a visual representation of the concepts and languages presented in the book, and to help students understand the theoretical concepts of computation and automata.
+This project is a Turing Machine simulator featuring a graphical user interface (GUI) built using the Pygame library. The simulator visualizes the operation of a Turing Machine, displaying state transitions and tape movements, and incorporates a simple particle system for visual effects.
 
 ## Features
 
-- **Graphical User Interface**: The simulator features a fully interactive GUI built with Pygame, making it easy to manage and visualize the Turing machine's operations.
-- **Transition Loading**: Users can load custom transitions for the Turing machine from CSV files to define how the machine processes input.
-- **Real-time Simulation**: The application simulates the Turing machine in real-time, showing the tape, current state, and read/write head movements.
-- **State Transition Graph**: The simulator dynamically generates and displays the state transition graph, illustrating the paths that the machine can take during its operation.
+- **Turing Machine Simulation**: Simulates a Turing Machine with customizable states and transitions.
+- **Graphical Interface**: Uses Pygame to display the Turing Machine tape, head, and state transitions.
+- **Particle System**: Adds visual effects to the simulation.
+- **MIDI Integration**: Converts MIDI files into Turing Machine transitions.
+- **CSV Loading**: Load Turing Machine transitions from CSV files.
+- **Dynamic Graph Theme**: Changes the theme of the state transition graph based on the current time.
 
 ## Installation
 
-### Prerequisites
+1. **Clone the repository**:
 
-Before you can run the Turing Machine Simulator, you need to have Python and Pygame installed on your machine. Python 3.6 or higher is recommended. You can download Python from [python.org](https://www.python.org/downloads/), and Pygame can be installed using pip:
+    ```sh
+    git clone https://github.com/Dor-sketch/TM.git
+    cd TM
+    ```
 
-```bash
-pip install pygame
-pip install pygame_gui
-```
+2. **Install dependencies**:
 
-### Running the Application
+    ```sh
+    pip install -r requirements.txt
+    ```
 
-To run the Turing Machine Simulator, you can clone this repository and execute the `main.py` script:
+    To generate notes, clone my other repository [AudioVisualSynth](https://github.com/Dor-sketch/AudioVisualSynth) and follow the instructions in the README.
 
-```bash
-python3 main.py
-```
+    Alternatively, you can just use the `music.py` from the `AudioVisualSynth` repository to generate notes.
+
+3. **Run the simulator**:
+
+    ```sh
+    python turing_machine_app.py
+    ```
 
 ## Usage
 
-- **Start the Simulator**: Launch the application as described above. The main window will open with an empty tape and a default starting state.
-- **Load Transitions**: Click the 'Load' button and select a CSV file with the transition rules. The format of the CSV should be `current_state,input_symbol,next_state,output_symbol,direction`.
-- **Reset the Machine**: If you need to reset the simulator at any point, simply click the 'Reset' button. This will clear the input and return the machine to its initial state.
-- **Simulate Input Processing**: After loading the transitions and setting the input on the tape, use the control buttons or keyboard arrows to step through the simulation.
+### Main Components
 
-## Project Structure
+- **TuringMachineApp**: The main application class that initializes the GUI and handles events.
+- **ParticleSystem**: Manages and updates particles for visual effects.
+- **TuringGraph**: Draws the state transition graph of the Turing Machine.
+- **midi_to_tm**: Converts MIDI files into Turing Machine transitions.
 
-- **`turing_machine_app.py`**: Main application file containing the GUI and event loop.
-- **`turing_machine.py`**: Defines the Turing machine logic and operations.
-- **`turing_machine_graph.py`**: Manages the graphical representation of the state transition graph.
-- **`particlesystem.py`**: A simple particle system for visual effects.
-- **`utils.py`**: Utility functions, including CSV file loading.
-- **`config.py`**: Configuration file containing constants like screen size and colors.
+### Running the Simulator
+
+1. **Launch the simulator**:
+
+    ```sh
+    python turing_machine_app.py
+    ```
+
+2. **Load Transitions**: Use the `Load` button to load transitions from a CSV or MIDI file.
+
+3. **Reset the Machine**: Use the `Reset` button to reset the Turing Machine to its initial state.
+
+4. **Input**: Enter an input string for the Turing Machine in the provided text box.
+
+5. **Run the Simulation**: Use keyboard controls (`Arrow Keys`) to step through the simulation.
+
+## File Structure
+
+- `turing_machine_app.py`: Main application code.
+- `particle_system.py`: Contains the particle system and particle classes.
+- `turing_machine.py`: Defines the Turing Machine class.
+- `turing_machine_graph.py`: Manages the state transition graph drawing.
+- `miditm.py`: Converts MIDI files to Turing Machine transitions.
+- `utils.py`: Utility functions for loading transitions from CSV and generating colors.
+- `config.py`: Configuration constants for the application.
+- `input_string.txt`: Default input string for the Turing Machine.
+- `mids/`: Directory containing example MIDI files for testing (my own compositions).
+- `csvs/`: Directory containing example CSV files for testing.
+- `images/`: Directory containing images for the README.
+
+## Example
+
+To see the Turing Machine in action, load an example MIDI or CSV file and start the simulation. Observe how the Turing Machine processes the input and moves through its states while particles provide visual feedback.
+
+## Code Explanation
+
+### MIDI to Turing Machine Conversion
+
+The `midi_to_tm` function in `miditm.py` converts a MIDI file to a Turing Machine. It processes `note_on` and `note_off` messages to create states and transitions for the Turing Machine.
+
+```python
+import mido
+from turing_machine import TuringMachine, DEFAULT_INPUT_SYMBOLS, DEFAULT_TAPE_SYMBOLS
+
+def initialize_variables():
+    states = set(['q1', 'q_accept', 'q_reject'])
+    transitions = {'q1': {}, 'q_accept': {}, 'q_reject': {}}
+    first_note = None
+    last_note = None
+    input_string = []
+    note_on_time = {}
+    tempo = mido.bpm2tempo(60)
+    prev_note = None
+    chord = []
+    prev_time = 0
+    current_time = 0
+    return states, transitions, first_note, last_note, input_string, note_on_time, tempo, prev_note, chord, prev_time, current_time
+
+def process_note_on(msg, filter, current_time, prev_time, chord, input_string, first_note, last_note, states, transitions, prev_note, note_on_time):
+    if filter and (msg.note < 50 or msg.note > 81):
+        return prev_time, chord, first_note, last_note, states, transitions, prev_note
+    note_str = str(msg.note)
+    note_on_time[note_str] = current_time
+    if prev_time != current_time:
+        if chord:
+            input_string.append(','.join(chord))
+            chord = []
+        prev_time = current_time
+    chord.append(note_str)
+    if first_note is None:
+        first_note = note_str
+    last_note = note_str
+    states.add(note_str)
+    if note_str not in transitions:
+        transitions[note_str] = {}
+    if prev_note is not None:
+        transitions[prev_note][note_str] = (note_str, 'X', 'R')
+    prev_note = note_str
+    return prev_time, chord, first_note, last_note, states, transitions, prev_note
+
+def process_note_off(msg, current_time, note_on_time):
+    note_str = str(msg.note)
+    if note_str in note_on_time:
+        del note_on_time[note_str]
+
+def midi_to_tm(midi_file, filter=False):
+    mid = mido.MidiFile(midi_file)
+    states, transitions, first_note, last_note, input_string, note_on_time, tempo, prev_note, chord, prev_time, current_time = initialize_variables()
+    for msg in mid:
+        if msg.type == 'set_tempo':
+            tempo = msg.tempo
+        current_time += mido.tick2second(msg.time, mid.ticks_per_beat, tempo)
+        if msg.type == 'note_on':
+            prev_time, chord, first_note, last_note, states, transitions, prev_note = process_note_on(msg, filter, current_time, prev_time, chord, input_string, first_note, last_note, states, transitions, prev_note, note_on_time)
+        if msg.type == 'note_off':
+            process_note_off(msg, current_time, note_on_time)
+    if chord:
+        input_string.append(','.join(chord))
+    transitions['q1'][first_note] = (first_note, 'X', 'R')
+    transitions[last_note]['q_accept'] = ('q_accept', 'X', 'R')
+    input_string = ' '.join(input_string)
+    with open('input_string.txt', 'w') as f:
+        f.write(input_string)
+    return TuringMachine(states, DEFAULT_INPUT_SYMBOLS, DEFAULT_TAPE_SYMBOLS, transitions)
+```
+
+### Drawing the Turing Machine GraphThe
+
+`TuringGraph` class in `turing_machine_graph.py` is responsible for drawing the Turing Machine's state transition graph using Pygame. It includes methods to set the theme, draw states and transitions, and calculate node positions.
+
+```python
+import math
+import random
+import time
+from collections import deque
+import pygame
+import pygame.gfxdraw
+from PIL import Image, ImageDraw
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, STATE_COLOR, TEXT_COLOR, LINES_COLOR, font, palettes
+
+class TuringGraph:
+    def __init__(self, states, transitions):
+        self.line_color = LINES_COLOR
+        self.circle_color = STATE_COLOR
+        self.text_color = TEXT_COLOR
+        self.graph = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.states_list = list(states)
+        self.transitions = transitions
+        self.positions = {state: (random.uniform(0, SCREEN_WIDTH), random.uniform(0, SCREEN_HEIGHT)) for state in self.states_list}
+        self.init_positions()
+        self.generate_graph()
+
+    def set_theme(self):
+        t = time.time()
+        palette_index = int(t / 10) % len(palettes)
+        color_index1 = int(t) % len(palettes[palette_index])
+        color_index2 = (color_index1 + 1) % len(palettes[palette_index])
+        color1 = palettes[palette_index][color_index1]
+        color2 = palettes[palette_index][color_index2]
+        gradient = Image.new('RGB', self.graph.get_size())
+        draw = ImageDraw.Draw(gradient)
+        for i in range(self.graph.get_width()):
+            r = color1[0] * (1 - i/self.graph.get_width()) + color2[0] * (i/self.graph.get_width())
+            g = color1[1] * (1 - i/self.graph.get_width()) + color2[1] * (i/self.graph.get_width())
+            b = color1[2] * (1 - i/self.graph.get_width()) + color2[2] * (i/self.graph.get_width())
+            draw.line([(i, 0), (i, self.graph.get_height())], fill=(int(r), int(g), int(b)))
+        gradient_pygame = pygame.image.fromstring(gradient.tobytes(), gradient.size, gradient.mode)
+        self.graph.blit(gradient_pygame, (0, 0))
+        self.line_color = (255 - color2[0], 255 - color2[1], 255 - color2[2])
+        self.circle_color = ((255 + color2[0]) // 2, (255 + color2[1]) // 2, (255 + color2[2]) // 2)
+
+    def generate_graph(self):
+        self.set_theme()
+        drawn = {}
+        self.draw_transitions(drawn)
+        self.draw_states()
+
+    def draw_transitions(self, drawn):
+        for state, transitions in self.transitions.items():
+            for symbol, (next_state, write_symbol, move_direction) in transitions.items():
+                if state == next_state:
+                    self.draw_loop(state, drawn, symbol, write_symbol, move_direction)
+                else:
+                    self.draw_line(state, next_state, symbol, write_symbol, move_direction)
+
+    def draw_loop(self, state, drawn, symbol, write_symbol, move_direction):
+        if state in drawn:
+            x, y = drawn[state]
+            self.blit_text(x, y - 20, symbol, write_symbol, move_direction)
+        else:
+            x, y = self.positions[state]
+            self.draw_arc(x, y)
+            self.blit_text(x + 10, y - 50, symbol, write_symbol, move_direction)
+            drawn[state] = (x, y)
+
+    def draw_arc(self, x, y):
+        rect = pygame.Rect(x, y - 30, 30, 30)
+        start_angle = math.pi / 2
+        stop_angle = 2.5 * math.pi
+        pygame.draw.arc(self.graph, self.text_color, rect, start_angle, stop_angle, width=2)
+
+    def draw_line(self, state, next_state, symbol, write_symbol, move_direction):
+        start_x, start_y = self.positions[state]
+        end_x, end_y = self.positions[next_state]
+        start_x += 20
+        end_x -= 20
+        pygame.draw.aaline(self.graph, self.line_color, (start_x, start_y), (end_x, end_y))
+        self.draw_arrow(start_x, start_y, end_x, end_y)
+        self.blit_text((start_x + end_x) / 2, (start_y + end_y) / 2, symbol, write_symbol, move_direction)
+
+    def draw_arrow(self, start_x, start_y, end_x, end_y):
+        dx = end_x - start_x
+        dy = end_y - start_y
+        angle = math.atan2(dy, dx)
+        ARROW_LENGTH = 10
+        ARROW_dx = ARROW_LENGTH * math.cos(angle)
+        ARROW_dy = ARROW_LENGTH * math.sin(angle)
+        ARROW_point1 = (end_x - ARROW_dx + ARROW_dy / 2, end_y - ARROW_dy - ARROW_dx / 2)
+        ARROW_point2 = (end_x - ARROW_dx - ARROW_dy / 2, end_y - ARROW_dy + ARROW_dx / 2)
+        pygame.draw.polygon(self.graph, self.line_color, [(end_x, end_y), ARROW_point1, ARROW_point2])
+
+    def blit_text(self, x, y, symbol, write_symbol, move_direction):
+        text_surface = font.render(f"{symbol}{ARROW}{write_symbol},{move_direction}", True, self.text_color)
+        text_surface.set_alpha(200)
+        text_surface.set_colorkey((0, 255, 0))
+        self.graph.blit(text_surface, (x, y))
+
+    def draw_states(self):
+        for state in self.states_list:
+            x, y = self.positions[state]
+            self.draw_3d_circle(self.graph, x, y, 20, self.circle_color, text=state, text_color=self.text_color)
+
+    def draw_3d_circle(self, surface, x, y, radius, color, text=None, text_color=(255, 255, 255)):
+        x, y, radius = int(x), int(y), int(radius)
+        shadow_color = (0, 0, 0, 50)
+        pygame.gfxdraw.filled_circle(surface, x + radius // 4, y + radius // 4, radius, shadow_color)
+        for i in range(radius):
+            alpha = round(255 * (i / radius))
+            pygame.gfxdraw.filled_circle(surface, x, y, radius - i, (*color, alpha))
+        if text is not None:
+            font = pygame.font.Font(None, 24)
+            text_surface = font.render(text, True, text_color)
+            text_rect = text_surface.get_rect(center=(x, y))
+            surface.blit(text_surface, text_rect)
+
+    def init_positions(self):
+        num_layers, max_nodes_in_layer = self.calculate_layers_and_nodes()
+        SPACING_X, SPACING_Y, MARGIN_X, MARGIN_Y = self.calculate_spacing(num_layers, max_nodes_in_layer)
+        visited, queue, layer_nodes = self.initialize_queue()
+        while queue:
+            state, layer = queue.popleft()
+            if not visited[state]:
+                visited[state] = True
+                self.update_positions(state, layer, SPACING_X, SPACING_Y, MARGIN_X, layer_nodes)
+                for next_state in self.transitions[state].values():
+                    queue.append((next_state[0], layer + 1))
+
+    def calculate_layers_and_nodes(self):
+        self.start_state = 'q1'
+        visited = {state: False for state in self.states_list}
+        queue = deque([(self.start_state, 0)])
+        layer_nodes = {}
+        max_layer = 0
+        max_nodes_in_layer = 0
+        while queue:
+            state, layer = queue.popleft()
+            if not visited[state]:
+                visited[state] = True
+                layer_nodes.setdefault(layer, []).append(state)
+                max_layer = max(max_layer, layer)
+                max_nodes_in_layer = max(max_nodes_in_layer, len(layer_nodes[layer]))
+                for next_state in self.transitions[state].values():
+                    queue.append((next_state[0], layer + 1))
+        return max_layer + 1, max_nodes_in_layer
+
+    def calculate_spacing(self, num_layers, max_nodes_in_layer):
+        SPACING_X = SCREEN_WIDTH // (num_layers + 1)
+        SPACING_Y = SCREEN_HEIGHT // (max_nodes_in_layer + 1)
+        MARGIN_X = SPACING_X
+        MARGIN_Y = SPACING_Y * 2
+        return SPACING_X, SPACING_Y, MARGIN_X, MARGIN_Y
+
+    def initialize_queue(self):
+        self.start_state = 'q1'
+        visited = {state: False for state in self.states_list}
+        queue = deque([(self.start_state, 0)])
+        layer_nodes = {}
+        return visited, queue, layer_nodes
+
+    def update_positions(self, state, layer, SPACING_X, SPACING_Y, MARGIN_X, layer_nodes):
+        x = MARGIN_X + layer * SPACING_X
+        num_nodes_in_layer = len(layer_nodes.get(layer, []))
+        layer_height = SPACING_Y * (num_nodes_in_layer - 1)
+        start_y = (SCREEN_HEIGHT - layer_height) // 2
+        for i, state in enumerate(layer_nodes.get(layer, [])):
+            y = start_y + i * SPACING_Y
+            self.positions[state] = (x, y)
+        layer_nodes.setdefault(layer, []).append(state)
+```
+
 
 ## Contributing
 
-Contributions to the Turing Machine Simulator are welcome! Please feel free to fork the repository, make changes, and submit pull requests. You can also open issues for bugs you've found or features you think would be useful.
+Contributions are welcome! Please fork the repository and create a pull request with your changes.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-## Examples
+## Acknowledgements
 
-### $0^{3^n}$ language
-
-The following examples show the operation of a Turing machine that recognizes the language of $0^{3^n}$, where $n$ is a non-negative integer. The concept of operation is based on dividing the input tape each time by 3, by crossing out every 2 zero in a group of 3. The machine keeps track only of the remainder of the division by 3, and if the input tape is all crossed out, the machine accepts the input.
-
-<p align="center">
-  <i>Example of a TM that recognizes the language of 3 pow</i>
-  <br>
-  <img src="power_of_3_examp.png" width="650" title="power_of_3_examp">
-</p>
-
-
-
-### Palindrome language
-
-The following example demonstrates a Turing machine that recognizes palindromes. The machine works by "zig-zag" from the beginning and end of the input tape, comparing the symbols at each end. If the symbols match, the machine keeps moving towards the center of the tape. If the symbols differ, the machine rejects the input. If the machine reaches the center of the tape and all symbols match, it accepts the input as a palindrome.
-
-<p align="center">
-    <i>Example of a TM that recognizes palindromes</i>
-    <br>
-  <img src="palindrome_examp.png" width="650" title="palindrome_examp">
-</p>
+- The Pygame library for providing the foundation for the GUI.
+- The Pygame GUI extension for handling UI elements.
+- The `mido` library for helping with MIDI file processing.
