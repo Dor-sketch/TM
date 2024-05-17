@@ -40,5 +40,25 @@ palettes = [
     [  # Palette 5: Grayscale with purple accent
         (60, 60, 60),    # Dark Gray
         (88, 86, 214)    # Apple Purple
+    ],
+    [  # Palette 6: Grayscale with orange accent
+        (60, 60, 60),    # Dark Gray
+        (255, 149, 0)    # Apple Orange
+    ],
+    [  # Palette 7: Grayscale with teal accent
+        (60, 60, 60),    # Dark Gray
+        (90, 200, 250)   # Apple Teal
+    ],
+    [  # Palette 8: Grayscale with pink accent
+        (60, 60, 60),    # Dark Gray
+        (255, 45, 85)    # Apple Pink
+    ],
+    [  # Palette 9: Grayscale with indigo accent
+        (60, 60, 60),    # Dark Gray
+        (94, 92, 230)    # Apple Indigo
+    ],
+    [  # Palette 10: Grayscale with lime accent
+        (60, 60, 60),    # Dark Gray
+        (210, 245, 60)   # Apple Lime
     ]
 ]
