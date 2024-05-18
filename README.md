@@ -20,28 +20,35 @@
 - [Usage](#usage)
   - [Main Components](#main-components)
   - [Running the Simulator](#running-the-simulator)
-- [File Structure](#file-structure)
 - [Examples](#examples)
-- [Music](#music)
-- [Code Explanation](#code-explanation)
+  - [Non-Musical Turing Machine for Palindromic Languages and $0^{{3}^{n}}$ Languages](#non-musical-turing-machine-for-palindromic-languages-and-03n-languages)
+  - [Ed Sheeran - Photograph](#ed-sheeran---photograph)
+  - [M83 - Midnight City](#m83---midnight-city)
+  - [Green Day - Boulevard of Broken Dreams](#green-day---boulevard-of-broken-dreams)
+  - [3 Doors Down - Here Without You](#3-doors-down---here-without-you)
+  - [Hans Zimmer - Time (Version 1)](#hans-zimmer---time-version-1)
+  - [Hans Zimmer - Time (Version 2)](#hans-zimmer---time-version-2)
+  - [Owl City - Fireflies](#owl-city---fireflies)
+  - [Evanescence - My Immortal](#evanescence---my-immortal)
+- [Code Explanation and Technical Details](#code-explanation-and-technical-details)
+  - [Program Structure](#program-structure)
   - [MIDI to Turing Machine Conversion](#midi-to-turing-machine-conversion)
   - [Drawing the Turing Machine GraphThe](#drawing-the-turing-machine-graphthe)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 
+---
+
 ## Overview
 
-This project is a Turing Machine simulator featuring a graphical user interface (GUI) built using the Pygame library. The simulator visualizes the operation of a Turing Machine, displaying state transitions and tape movements, and incorporates a simple particle system for visual effects.
-
-### Non-Musical Turing Machine for Palindromic Languages and $0^{{3}^{n}}$ Languages
-[Watch the video here](https://github.com/Dor-sketch/TM/assets/138825033/c7e489f6-9cc6-482a-b8ba-52ea8af576f6)
+This project is a Turing Machine simulator with a graphical user interface (GUI) built using the `Pygame` library. The simulator visualizes the operation of a Turing Machine, displaying state transitions and tape movements, and incorporates a simple particle system for visual effects.
 
 ## Features
 
-- **Turing Machine Simulation**: Simulates a Turing Machine with customizable states and transitions.
-- **Graphical Interface**: Uses Pygame to display the Turing Machine tape, head, and state transitions.
-- **Particle System**: Adds visual effects to the simulation.
+- **Turing Machine Simulation**: Simulate a Turing Machine with customizable states and transitions.
+- **Graphical Interface**: Use Pygame to display the Turing Machine tape, head, and state transitions.
+- **Particle System**: Add visual effects to the simulation.
 - **MIDI Integration**: Converts MIDI files into Turing Machine transitions.
 - **CSV Loading**: Load Turing Machine transitions from CSV files.
 - **Dynamic Graph Theme**: Changes the theme of the state transition graph based on the current time.
@@ -61,9 +68,9 @@ This project is a Turing Machine simulator featuring a graphical user interface 
     pip install -r requirements.txt
     ```
 
-    To generate notes, clone my other repository [AudioVisualSynth](https://github.com/Dor-sketch/AudioVisualSynth) and follow the instructions in the README.
+    To generate notes, clone the  [AudioVisualSynth](https://github.com/Dor-sketch/AudioVisualSynth) repository and follow the instructions in its README.
 
-    Alternatively, you can just use the `music.py` from the `AudioVisualSynth` repository to generate notes.
+    Alternatively, you can use `music.py` from the `AudioVisualSynth` repository to generate notes.
 
 3. **Run the simulator**:
 
@@ -71,12 +78,14 @@ This project is a Turing Machine simulator featuring a graphical user interface 
     python turing_machine_app.py
     ```
 
+---
+
 ## Usage
 
 ### Main Components
 
-- **TuringMachineApp**: The main application class that initializes the GUI and handles events.
-- **ParticleSystem**: Manages and updates particles for visual effects.
+- **TuringMachineApp**: This is the main application class that initializes the GUI and handles events.
+- **ParticleSystem**: "This manages and updates particles for visual effects.
 - **TuringGraph**: Draws the state transition graph of the Turing Machine.
 - **midi_to_tm**: Converts MIDI files into Turing Machine transitions.
 
@@ -96,7 +105,51 @@ This project is a Turing Machine simulator featuring a graphical user interface 
 
 5. **Run the Simulation**: Use keyboard controls (`Arrow Keys`) to step through the simulation.
 
-## File Structure
+## Examples
+
+To see the Turing Machine in action, load an example MIDI or CSV file, and start the simulation. Observe how the Turing Machine processes the input and moves through its states while particles provide visual feedback. Here are some examples of the Turing Machine in action. I do not own the rights to the music used in these examples. The MIDI files in the `mids/` directory are my own compositions.
+
+### Non-Musical Turing Machine for Palindromic Languages and $0^{{3}^{n}}$ Languages
+
+[Watch the video here](https://github.com/Dor-sketch/TM/assets/138825033/c7e489f6-9cc6-482a-b8ba-52ea8af576f6)
+
+### Ed Sheeran - Photograph
+
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/f9c2e540-ec35-44a8-b9ef-0a51ac3b74f0)
+
+### M83 - Midnight City
+
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/b08ecd4e-6771-47fd-aa13-cd1e50ea250b)
+
+### Green Day - Boulevard of Broken Dreams
+
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/ff996125-f73e-4299-ac27-0b599540e7d5)
+
+### 3 Doors Down - Here Without You
+
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/0f7c9902-d982-450f-aef7-7ecf8d940968)
+
+### Hans Zimmer - Time (Version 1)
+
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/c86cc5db-5e7d-46a5-b50e-7304474aa5d3)
+
+### Hans Zimmer - Time (Version 2)
+
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/990c8c49-ec03-4d21-81f4-0b32ad326142)
+
+### Owl City - Fireflies
+
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/20a33769-e3d8-459b-ae3d-9bfd945b7f65)
+
+### Evanescence - My Immortal
+
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/592520a6-2a6e-47cf-9abd-7ef2a63c7c16)
+
+---
+
+## Code Explanation and Technical Details
+
+### Program Structure
 
 - `turing_machine_app.py`: Main application code.
 - `particle_system.py`: Contains the particle system and particle classes.
@@ -106,41 +159,9 @@ This project is a Turing Machine simulator featuring a graphical user interface 
 - `utils.py`: Utility functions for loading transitions from CSV and generating colors.
 - `config.py`: Configuration constants for the application.
 - `input_string.txt`: Default input string for the Turing Machine.
-- `mids/`: Directory containing example MIDI files for testing (my own compositions).
+- `mids/`: Directory containing example MIDI files for testing.
 - `csvs/`: Directory containing example CSV files for testing.
 - `images/`: Directory containing images for the README.
-
-## Examples
-
-To see the Turing Machine in action, load an example MIDI or CSV file and start the simulation. Observe how the Turing Machine processes the input and moves through its states while particles provide visual feedback.
-
-## Music
-
-### Ed Sheeran - Photograph
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/f9c2e540-ec35-44a8-b9ef-0a51ac3b74f0)
-
-### M83 - Midnight City
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/b08ecd4e-6771-47fd-aa13-cd1e50ea250b)
-
-### Green Day - Boulevard of Broken Dreams
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/ff996125-f73e-4299-ac27-0b599540e7d5)
-
-### 3 Doors Down - Here Without You
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/0f7c9902-d982-450f-aef7-7ecf8d940968)
-
-### Hans Zimmer - Time (Version 1)
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/c86cc5db-5e7d-46a5-b50e-7304474aa5d3)
-
-### Hans Zimmer - Time (Version 2)
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/990c8c49-ec03-4d21-81f4-0b32ad326142)
-
-### Owl City - Fireflies
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/20a33769-e3d8-459b-ae3d-9bfd945b7f65)
-
-### Evanescence - My Immortal
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/592520a6-2a6e-47cf-9abd-7ef2a63c7c16)
-
-## Code Explanation
 
 ### MIDI to Turing Machine Conversion
 
@@ -386,17 +407,17 @@ class TuringGraph:
         layer_nodes.setdefault(layer, []).append(state)
 ```
 
-
 ## Contributing
 
-Contributions are welcome! Please fork the repository and create a pull request with your changes.
+Contributions are welcome! Please fork the repository, make your changes, and create a pull request.
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the MIT License. Refer to the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 
-- The Pygame library for providing the foundation for the GUI.
-- The Pygame GUI extension for handling UI elements.
-- The `mido` library for helping with MIDI file processing.
+- Thanks to the `Pygame` library for providing the foundation for the GUI.
+- Thanks to the `Pygame GUI` extension for handling UI elements.
+- Thanks to the `mido` library for aiding in MIDI file processing.
+- Thanks to the `PIL` library for image processing.
