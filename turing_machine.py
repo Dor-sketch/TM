@@ -1,7 +1,7 @@
 """
 Turing Machine class implementation for the Turing Machine Simulator
 """
-from AudioVisualSynth.music import generate_and_play_note
+from AudioVisualSynth.music.music import generate_and_play_note
 DEFAULT_INPUT_SYMBOLS = {'0', '1'}
 DEFAULT_TAPE_SYMBOLS = {'0', '1', '_', 'x', 'y'}
 
