@@ -2,7 +2,7 @@
 # Turing Machine Simulator (AudioVisualSynth Integration)
 
 <p align="center">
-  <table>
+  <table align="center">
     <tr>
       <td><img src="images/blue.png" alt="Blue" width="400"/></td>
       <td><img src="images/red.png" alt="Red" width="400"/></td>
@@ -33,6 +33,9 @@
 ## Overview
 
 This project is a Turing Machine simulator featuring a graphical user interface (GUI) built using the Pygame library. The simulator visualizes the operation of a Turing Machine, displaying state transitions and tape movements, and incorporates a simple particle system for visual effects.
+
+### Non-Musical Turing Machine for Palindromic Languages and $0^{{3}^{n}}$ Languages
+[Watch the video here](https://github.com/Dor-sketch/TM/assets/138825033/c7e489f6-9cc6-482a-b8ba-52ea8af576f6)
 
 ## Features
 
@@ -113,19 +116,22 @@ To see the Turing Machine in action, load an example MIDI or CSV file and start 
 
 ## Music
 
-### Boulevard of Broken Dreams (Green Day)
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/ff996125-f73e-4299-ac27-0b599540e7d5)
+### Ed Sheeran - Photograph
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/f9c2e540-ec35-44a8-b9ef-0a51ac3b74f0)
 
 ### M83 - Midnight City
 [Watch here](https://github.com/Dor-sketch/TM/assets/138825033/b08ecd4e-6771-47fd-aa13-cd1e50ea250b)
 
+### Green Day - Boulevard of Broken Dreams
+[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/ff996125-f73e-4299-ac27-0b599540e7d5)
+
 ### 3 Doors Down - Here Without You
 [Watch here](https://github.com/Dor-sketch/TM/assets/138825033/0f7c9902-d982-450f-aef7-7ecf8d940968)
 
-### Time (Hans Zimmer) - Version 1
+### Hans Zimmer - Time (Version 1)
 [Watch here](https://github.com/Dor-sketch/TM/assets/138825033/c86cc5db-5e7d-46a5-b50e-7304474aa5d3)
 
-### Time (Hans Zimmer) - Version 2
+### Hans Zimmer - Time (Version 2)
 [Watch here](https://github.com/Dor-sketch/TM/assets/138825033/990c8c49-ec03-4d21-81f4-0b32ad326142)
 
 ### Owl City - Fireflies
