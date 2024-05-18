@@ -23,13 +23,9 @@
 - [Examples](#examples)
   - [Non-Musical Turing Machine for Palindromic Languages and $0^{{3}^{n}}$ Languages](#non-musical-turing-machine-for-palindromic-languages-and-03n-languages)
   - [Ed Sheeran - Photograph](#ed-sheeran---photograph)
-  - [M83 - Midnight City](#m83---midnight-city)
   - [Green Day - Boulevard of Broken Dreams](#green-day---boulevard-of-broken-dreams)
-  - [3 Doors Down - Here Without You](#3-doors-down---here-without-you)
-  - [Hans Zimmer - Time (Version 1)](#hans-zimmer---time-version-1)
-  - [Hans Zimmer - Time (Version 2)](#hans-zimmer---time-version-2)
+  - [Hans Zimmer - Time (Inception Theme)](#hans-zimmer---time-inception-theme)
   - [Owl City - Fireflies](#owl-city---fireflies)
-  - [Evanescence - My Immortal](#evanescence---my-immortal)
 - [Code Explanation and Technical Details](#code-explanation-and-technical-details)
   - [Program Structure](#program-structure)
   - [MIDI to Turing Machine Conversion](#midi-to-turing-machine-conversion)
@@ -117,33 +113,17 @@ To see the Turing Machine in action, load an example MIDI or CSV file, and start
 
 [Watch here](https://github.com/Dor-sketch/TM/assets/138825033/f9c2e540-ec35-44a8-b9ef-0a51ac3b74f0)
 
-### M83 - Midnight City
-
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/b08ecd4e-6771-47fd-aa13-cd1e50ea250b)
-
 ### Green Day - Boulevard of Broken Dreams
 
 [Watch here](https://github.com/Dor-sketch/TM/assets/138825033/ff996125-f73e-4299-ac27-0b599540e7d5)
 
-### 3 Doors Down - Here Without You
-
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/0f7c9902-d982-450f-aef7-7ecf8d940968)
-
-### Hans Zimmer - Time (Version 1)
-
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/c86cc5db-5e7d-46a5-b50e-7304474aa5d3)
-
-### Hans Zimmer - Time (Version 2)
+### Hans Zimmer - Time (Inception Theme)
 
 [Watch here](https://github.com/Dor-sketch/TM/assets/138825033/990c8c49-ec03-4d21-81f4-0b32ad326142)
 
 ### Owl City - Fireflies
 
 [Watch here](https://github.com/Dor-sketch/TM/assets/138825033/20a33769-e3d8-459b-ae3d-9bfd945b7f65)
-
-### Evanescence - My Immortal
-
-[Watch here](https://github.com/Dor-sketch/TM/assets/138825033/592520a6-2a6e-47cf-9abd-7ef2a63c7c16)
 
 ---
 
@@ -409,7 +389,13 @@ class TuringGraph:
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository, make your changes, and create a pull request.
+Contributions are welcome! Please fork the repository, make your changes, and create a pull request. Here are some areas for potential contributions:
+
+1. **Multiple Tape Support**: The current implementation reads symbols that represent multiple notes to simulate playing chords. This is a simplification and doesn't fully leverage the potential of a multitape Turing Machine. Implementing multiple tapes, each representing a note, would allow the Turing Machine to play chords and more complex music. Note that while the current implementation visually represents multiple notes, the state transitions are still based on a single tape.
+
+2. **Tempo and Time States**: At present, a text file is used to dictate the duration of each note due to the limitations of the single tape model. A more integrated approach would be to incorporate note duration within the transition functions. This could be achieved by adding states that represent tempo and time, or by implementing a multitape Turing Machine where one tape represents the notes and another represents the note duration.
+
+3. **AI-Based Sound File Parsing**: Currently, a MIDI file is used to generate the Turing Machine transitions. An exciting enhancement would be to implement an AI model that can parse any sound file and generate the Turing Machine transitions. This would allow the Turing Machine to play a wider variety of sound files, not just MIDI files.
 
 ## License
 
